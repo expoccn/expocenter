@@ -2,12 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { AlertTriangle, ArrowRight, Database, Droplets, Snowflake, Waves } from 'lucide-react';
 import { ExpoShell } from '@/components/dashboard/ExpoShell';
 import { MetricCard, CagTrendChart } from '@/components/dashboard/ExpoWidgets';
-import {
-  ChillerCapacityComparisonChart,
-  ChillerOperationChart,
-  PavillionConsumptionChart,
-  WaterMixChart,
-} from '@/components/dashboard/AnalyticsCharts';
+import { ChillerOperationChart, PavillionConsumptionChart, WaterMixChart } from '@/components/dashboard/AnalyticsCharts';
 import { Panel } from '@/components/dashboard/Panel';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 
@@ -15,79 +10,53 @@ export const Route = createFileRoute('/')({ component: OverviewPage });
 
 function OverviewPage() {
   return (
-    <ExpoShell
-      title="Visão Geral"
-      description="Visão executiva da Central de Água Gelada, gestão hídrica e qualidade das fontes do Expo Center Norte."
-    >
+    <ExpoShell title="Visão Geral" description="Visão executiva da Central de Água Gelada, gestão hídrica e qualidade das fontes.">
       {(data) => {
         const operating = data.cag.chillers.filter((item) => item.state === 'OPERATING').length;
         const alarmed = data.cag.chillers.filter((item) => item.alarmCode && item.alarmCode !== '0').length;
         const commErrors = data.water.meters.filter((item) => item.status === 'COMM_ERROR').length;
         const avgCapacity = data.cag.chillers.filter((item) => item.state === 'OPERATING' && item.capacityPct != null);
-        const avgCapacityValue = avgCapacity.length
-          ? avgCapacity.reduce((sum, item) => sum + Number(item.capacityPct), 0) / avgCapacity.length
-          : null;
+        const avgCapacityValue = avgCapacity.length ? avgCapacity.reduce((sum, item) => sum + Number(item.capacityPct), 0) / avgCapacity.length : null;
         const cagAnalytics = data.cag.analytics;
         const waterAnalytics = data.water.analytics;
 
         return (
           <>
-            <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-              <MetricCard label="Chillers operando" value={`${operating}/3`} detail="Equipamentos com evidência de operação no período." tone={operating ? 'ok' : 'info'} icon={Snowflake} />
-              <MetricCard label="Capacidade em operação" value={avgCapacityValue == null ? 'N/D' : `${avgCapacityValue.toFixed(1).replace('.', ',')}%`} detail="Média apenas entre chillers identificados como operando." tone="info" icon={Waves} />
-              <MetricCard label="Alarmes observados" value={String(alarmed)} detail="Códigos exibidos sem inferir causa raiz." tone={alarmed ? 'warn' : 'ok'} icon={AlertTriangle} />
-              <MetricCard label="Cobertura geral" value={data.quality.overallCoveragePct == null ? 'N/D' : `${data.quality.overallCoveragePct.toFixed(1).replace('.', ',')}%`} detail="Ausência de amostra nunca é convertida em zero." tone={(data.quality.overallCoveragePct ?? 0) >= 90 ? 'ok' : 'warn'} icon={Database} />
-              <MetricCard label="Consumo de água" value={data.water.totalM3 == null ? 'N/D' : `${data.water.totalM3.toFixed(1).replace('.', ',')} m³`} detail={`${commErrors} hidrômetro(s) com falha de comunicação no período.`} tone={commErrors ? 'warn' : 'ok'} icon={Droplets} />
+            <section className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-5">
+              <MetricCard label="Chillers operando" value={`${operating}/3`} detail="Equipamentos com evidência de operação." tone={operating ? 'ok' : 'info'} icon={Snowflake} />
+              <MetricCard label="Capacidade média" value={avgCapacityValue == null ? 'N/D' : `${avgCapacityValue.toFixed(1).replace('.', ',')}%`} detail="Entre chillers identificados como operando." tone="info" icon={Waves} />
+              <MetricCard label="Alarmes ativos" value={String(alarmed)} detail="Códigos exibidos sem inferir causa raiz." tone={alarmed ? 'crit' : 'ok'} icon={AlertTriangle} />
+              <MetricCard label="Cobertura geral" value={data.quality.overallCoveragePct == null ? 'N/D' : `${data.quality.overallCoveragePct.toFixed(1).replace('.', ',')}%`} detail="Amostras válidas do período." tone={(data.quality.overallCoveragePct ?? 0) >= 90 ? 'ok' : 'warn'} icon={Database} />
+              <MetricCard label="Consumo de água" value={data.water.totalM3 == null ? 'N/D' : `${data.water.totalM3.toFixed(1).replace('.', ',')} m³`} detail={`${commErrors} hidrômetro(s) sem comunicação.`} tone={commErrors ? 'warn' : 'ok'} icon={Droplets} />
             </section>
 
-            <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.8fr)]">
-              <Panel title="Horas de operação dos chillers" icon={Snowflake}>
-                <ChillerOperationChart data={cagAnalytics?.chillerOperation || []} />
-              </Panel>
-              <Panel title="Composição do consumo hídrico" icon={Droplets}>
-                <WaterMixChart data={waterAnalytics?.mix || []} />
-              </Panel>
+            <section className="grid min-w-0 gap-3.5 xl:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.75fr)]">
+              <Panel title="Horas de operação dos chillers" icon={Snowflake}><ChillerOperationChart data={cagAnalytics?.chillerOperation || []} /></Panel>
+              <Panel title="Composição do consumo hídrico" icon={Droplets}><WaterMixChart data={waterAnalytics?.mix || []} /></Panel>
             </section>
 
-            <section className="grid min-w-0 gap-4 2xl:grid-cols-[minmax(0,1fr)_390px]">
-              <Panel title="Tendência de água gelada" icon={Waves} action={<Link to="/cag" className="inline-flex items-center gap-1 text-xs font-semibold text-primary">Abrir CAG <ArrowRight className="h-3.5 w-3.5" /></Link>}>
+            <section className="grid min-w-0 gap-3.5 2xl:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.72fr)_minmax(290px,0.58fr)]">
+              <Panel title="Tendência de água gelada" icon={Waves} action={<Link to="/cag" className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary hover:underline">Abrir CAG <ArrowRight className="h-3 w-3" /></Link>}>
                 <CagTrendChart data={data.cag.trends} />
               </Panel>
 
-              <Panel title="Pontos de atenção" icon={AlertTriangle} className="min-w-0">
-                <div className="space-y-3">
-                  {data.attention.length ? data.attention.slice(0, 8).map((item) => (
-                    <div key={item.id} className="rounded-xl border border-border bg-surface/50 p-3.5">
-                      <div className="flex flex-wrap items-start justify-between gap-2">
-                        <p className="min-w-0 flex-1 text-sm font-semibold leading-snug">{item.title}</p>
-                        <StatusBadge label={item.source} tone={item.tone} />
-                      </div>
-                      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.detail}</p>
-                    </div>
-                  )) : <p className="rounded-xl border border-dashed border-border p-5 text-sm text-muted-foreground">Sem pontos de atenção registrados para o período.</p>}
-                </div>
-              </Panel>
-            </section>
-
-            <section className="grid min-w-0 gap-4 xl:grid-cols-2">
               <Panel title="Consumo por pavilhão" icon={Droplets}>
                 <PavillionConsumptionChart data={waterAnalytics?.pavillions || []} />
               </Panel>
-              <Panel title="Capacidade média dos chillers" icon={Snowflake}>
-                <ChillerCapacityComparisonChart data={cagAnalytics?.chillerCapacity || []} />
-              </Panel>
-            </section>
 
-            <section className="grid gap-4 lg:grid-cols-3">
-              <Link to="/cag" className="group rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
-                <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Snowflake className="h-5 w-5" /></span><div><p className="font-semibold">Central de Água Gelada</p><p className="text-xs text-muted-foreground">Chillers, bombas, pressões e tendências</p></div></div>
-              </Link>
-              <Link to="/hidrometros" className="group rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
-                <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Droplets className="h-5 w-5" /></span><div><p className="font-semibold">Gestão Hídrica</p><p className="text-xs text-muted-foreground">Potável, reúso, pavilhões e ranking de consumo</p></div></div>
-              </Link>
-              <Link to="/qualidade-dados" className="group rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
-                <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Database className="h-5 w-5" /></span><div><p className="font-semibold">Qualidade dos Dados</p><p className="text-xs text-muted-foreground">Cobertura, disponibilidade, comunicação e lacunas</p></div></div>
-              </Link>
+              <Panel title="Pontos de atenção" icon={AlertTriangle} className="min-w-0">
+                <div className="space-y-2">
+                  {data.attention.length ? data.attention.slice(0, 6).map((item) => (
+                    <div key={item.id} className="rounded-xl border border-border/80 bg-surface/45 p-3">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <p className="min-w-0 flex-1 text-[11px] font-semibold leading-snug text-foreground">{item.title}</p>
+                        <StatusBadge label={item.source} tone={item.tone} />
+                      </div>
+                      <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground">{item.detail}</p>
+                    </div>
+                  )) : <p className="rounded-xl border border-dashed border-border p-4 text-[11px] text-muted-foreground">Sem pontos de atenção registrados para o período.</p>}
+                </div>
+              </Panel>
             </section>
           </>
         );

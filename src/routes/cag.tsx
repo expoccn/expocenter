@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Activity, CircleGauge, Gauge, Snowflake, Waves } from 'lucide-react';
 import { useState } from 'react';
 import { ExpoShell } from '@/components/dashboard/ExpoShell';
-import { ChillerCard, MetricCard, PumpGroupCard } from '@/components/dashboard/ExpoWidgets';
+import { ChillerSummaryCard, MetricCard, PumpGroupCard } from '@/components/dashboard/ExpoWidgets';
 import {
   ChillerCapacityComparisonChart,
   ChillerCapacityTrendChart,
@@ -14,7 +14,6 @@ import {
   PumpPressureTrendChart,
 } from '@/components/dashboard/AnalyticsCharts';
 import { Panel } from '@/components/dashboard/Panel';
-import { cn } from '@/lib/utils';
 import type { ExpoCagGroupId } from '@/types/expo';
 
 export const Route = createFileRoute('/cag')({ component: CagPage });
@@ -37,12 +36,8 @@ const groups: Array<{ id: ExpoCagGroupId; label: string }> = [
 
 function Selector({ value, onChange }: { value: ExpoCagGroupId; onChange: (value: ExpoCagGroupId) => void }) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {groups.map((group) => (
-        <button key={group.id} type="button" onClick={() => onChange(group.id)} className={cn('rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors', value === group.id ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground')}>
-          {group.label}
-        </button>
-      ))}
+    <div className="expo-segmented">
+      {groups.map((group) => <button key={group.id} type="button" onClick={() => onChange(group.id)} data-active={value === group.id} className="expo-segmented-button">{group.label}</button>)}
     </div>
   );
 }
@@ -55,10 +50,7 @@ function CagPage() {
   const [trendContext, setTrendContext] = useState<TrendContext>('water');
 
   return (
-    <ExpoShell
-      title="Central de Água Gelada"
-      description="Análise dos chillers Azul, Branco e Vermelho e dos respectivos grupos de bombas. As séries são calculadas no Operational; o frontend apenas visualiza as evidências disponíveis."
-    >
+    <ExpoShell title="CAG" description="Monitoramento dos chillers e grupos hidráulicos da Central de Água Gelada.">
       {(data) => {
         const operating = data.cag.chillers.filter((item) => item.state === 'OPERATING').length;
         const alarms = data.cag.chillers.filter((item) => item.alarmCode && item.alarmCode !== '0').length;
@@ -71,7 +63,6 @@ function CagPage() {
         const selectedCapacity = analytics?.capacity.find((item) => item.id === chillerGroup);
         const selectedPressure = analytics?.pressures.find((item) => item.id === chillerGroup);
         const selectedPump = analytics?.pumps.find((item) => item.id === pumpGroup);
-
         const trendWater = analytics?.water.find((item) => item.id === trendGroup);
         const trendCapacity = analytics?.capacity.find((item) => item.id === trendGroup);
         const trendPressure = analytics?.pressures.find((item) => item.id === trendGroup);
@@ -79,93 +70,72 @@ function CagPage() {
 
         return (
           <>
-            <div className="dashboard-scrollbar overflow-x-auto pb-1">
-              <div className="flex min-w-max gap-2 rounded-2xl border border-border bg-card p-2">
-                {tabs.map((item) => (
-                  <button key={item.id} type="button" onClick={() => setTab(item.id)} className={cn('rounded-xl px-4 py-2 text-xs font-semibold transition-colors', tab === item.id ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-accent hover:text-foreground')}>{item.label}</button>
-                ))}
+            <div className="dashboard-scrollbar overflow-x-auto pb-0.5">
+              <div className="expo-segmented">
+                {tabs.map((item) => <button key={item.id} type="button" onClick={() => setTab(item.id)} data-active={tab === item.id} className="expo-segmented-button">{item.label}</button>)}
               </div>
             </div>
 
             {tab === 'overview' ? (
               <>
-                <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                  <MetricCard label="Chillers operando" value={`${operating}/3`} detail="Estado baseado em evidências do período." tone={operating ? 'ok' : 'info'} icon={Snowflake} />
+                <section className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
+                  <MetricCard label="Chillers operando" value={`${operating}/3`} detail="Evidência de operação no período." tone={operating ? 'ok' : 'info'} icon={Snowflake} />
                   <MetricCard label="Bombas ativas" value={String(activePumps)} detail="Somatório dos três grupos hidráulicos." tone={activePumps ? 'ok' : 'info'} icon={Waves} />
-                  <MetricCard label="Alarmes observados" value={String(alarms)} detail="Código não é tratado automaticamente como causa raiz." tone={alarms ? 'warn' : 'ok'} icon={Activity} />
-                  <MetricCard label="Cobertura dos chillers" value={avgCoverage == null ? 'N/D' : `${avgCoverage.toFixed(1).replace('.', ',')}%`} detail="Cobertura média das fontes do período." tone={(avgCoverage ?? 0) >= 90 ? 'ok' : 'warn'} icon={CircleGauge} />
+                  <MetricCard label="Alarmes observados" value={String(alarms)} detail="Sem inferência automática de causa raiz." tone={alarms ? 'warn' : 'ok'} icon={Activity} />
+                  <MetricCard label="Cobertura dos chillers" value={avgCoverage == null ? 'N/D' : `${avgCoverage.toFixed(1).replace('.', ',')}%`} detail="Cobertura média das três fontes." tone={(avgCoverage ?? 0) >= 90 ? 'ok' : 'warn'} icon={CircleGauge} />
                 </section>
-
-                <section className="grid min-w-0 gap-4 xl:grid-cols-2">
+                <section className="grid min-w-0 gap-3.5 xl:grid-cols-2">
                   <Panel title="Horas de operação por chiller" icon={Activity}><ChillerOperationChart data={analytics?.chillerOperation || []} /></Panel>
                   <Panel title="Capacidade média por circuito" icon={Gauge}><ChillerCapacityComparisonChart data={analytics?.chillerCapacity || []} /></Panel>
                 </section>
-
-                <div className="grid gap-4 xl:grid-cols-3">{data.cag.chillers.map((item) => <ChillerCard key={item.id} chiller={item} />)}</div>
-                <div className="grid gap-4 xl:grid-cols-3">{data.cag.pumpGroups.map((item) => <PumpGroupCard key={item.id} group={item} />)}</div>
+                <div className="grid gap-3 xl:grid-cols-3">{data.cag.chillers.map((item) => <ChillerSummaryCard key={item.id} chiller={item} />)}</div>
+                <div className="grid gap-3 xl:grid-cols-3">{data.cag.pumpGroups.map((item) => <PumpGroupCard key={item.id} group={item} />)}</div>
               </>
             ) : null}
 
             {tab === 'chillers' ? (
               <>
-                <div className="grid gap-4 xl:grid-cols-3">{data.cag.chillers.map((item) => <ChillerCard key={item.id} chiller={item} />)}</div>
-                <Panel title={`Análise temporal · Chiller ${groups.find((g) => g.id === chillerGroup)?.label}`} icon={Snowflake} action={<Selector value={chillerGroup} onChange={setChillerGroup} />}>
-                  <div className="grid min-w-0 gap-5">
-                    <div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Água gelada</p><ChillerWaterTrendChart data={selectedWater?.series || []} /></div>
-                    <div className="grid min-w-0 gap-5 xl:grid-cols-2">
-                      <div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Capacidade</p><ChillerCapacityTrendChart data={selectedCapacity?.series || []} /></div>
-                      <div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Pressões dos circuitos</p><ChillerPressureTrendChart data={selectedPressure?.series || []} /></div>
-                    </div>
-                  </div>
-                </Panel>
+                <div className="grid gap-3 xl:grid-cols-3">
+                  {data.cag.chillers.map((item) => <ChillerSummaryCard key={item.id} chiller={item} selected={item.id === chillerGroup} onClick={() => setChillerGroup(item.id)} />)}
+                </div>
+                <section className="grid min-w-0 gap-3.5 xl:grid-cols-2">
+                  <Panel title={`Água gelada · Chiller ${groups.find((g) => g.id === chillerGroup)?.label}`} icon={Snowflake} action={<Selector value={chillerGroup} onChange={setChillerGroup} />}><ChillerWaterTrendChart data={selectedWater?.series || []} /></Panel>
+                  <Panel title="Capacidade (%)" icon={Gauge}><ChillerCapacityTrendChart data={selectedCapacity?.series || []} /></Panel>
+                  <Panel title="Pressões dos circuitos" icon={CircleGauge} className="xl:col-span-2"><ChillerPressureTrendChart data={selectedPressure?.series || []} /></Panel>
+                </section>
               </>
             ) : null}
 
             {tab === 'pumps' ? (
               <>
-                <div className="grid gap-4 xl:grid-cols-3">{data.cag.pumpGroups.map((item) => <PumpGroupCard key={item.id} group={item} />)}</div>
-                <Panel title={`Análise hidráulica · Grupo ${groups.find((g) => g.id === pumpGroup)?.label}`} icon={Waves} action={<Selector value={pumpGroup} onChange={setPumpGroup} />}>
-                  <div className="grid min-w-0 gap-5 xl:grid-cols-2">
-                    <div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Pressão real × setpoint</p><PumpPressureTrendChart data={selectedPump?.pressureSeries || []} /></div>
-                    <div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Abertura do bypass</p><PumpBypassTrendChart data={selectedPump?.bypassSeries || []} /></div>
-                    <div className="xl:col-span-2"><p className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Estado das BAGs</p><PumpActivityChart data={selectedPump?.activitySeries || []} /></div>
-                  </div>
-                </Panel>
+                <div className="flex justify-end"><Selector value={pumpGroup} onChange={setPumpGroup} /></div>
+                <div className="grid gap-3 xl:grid-cols-3">{data.cag.pumpGroups.map((item) => <PumpGroupCard key={item.id} group={item} />)}</div>
+                <section className="grid min-w-0 gap-3.5 xl:grid-cols-2">
+                  <Panel title={`Pressão da linha × setpoint · Grupo ${groups.find((g) => g.id === pumpGroup)?.label}`} icon={Gauge}><PumpPressureTrendChart data={selectedPump?.pressureSeries || []} /></Panel>
+                  <Panel title="Abertura do bypass" icon={Waves}><PumpBypassTrendChart data={selectedPump?.bypassSeries || []} /></Panel>
+                  <Panel title="Estado das BAGs" icon={Activity} className="xl:col-span-2"><PumpActivityChart data={selectedPump?.activitySeries || []} /></Panel>
+                </section>
               </>
             ) : null}
 
             {tab === 'trends' ? (
-              <Panel
-                title="Tendências analíticas"
-                icon={Waves}
-                action={<Selector value={trendGroup} onChange={setTrendGroup} />}
-              >
-                <div className="mb-4 flex flex-wrap gap-2">
-                  {([
-                    ['water', 'Água gelada'],
-                    ['capacity', 'Capacidade'],
-                    ['pressures', 'Pressões'],
-                    ['pumps', 'Bombas'],
-                  ] as Array<[TrendContext, string]>).map(([id, label]) => (
-                    <button key={id} type="button" onClick={() => setTrendContext(id)} className={cn('rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors', trendContext === id ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground')}>{label}</button>
-                  ))}
+              <Panel title="Tendências analíticas" icon={Waves} action={<Selector value={trendGroup} onChange={setTrendGroup} />}>
+                <div className="mb-3 dashboard-scrollbar overflow-x-auto pb-0.5">
+                  <div className="expo-segmented">
+                    {([['water', 'Água gelada'], ['capacity', 'Capacidade'], ['pressures', 'Pressões'], ['pumps', 'Bombas']] as Array<[TrendContext, string]>).map(([id, label]) => (
+                      <button key={id} type="button" onClick={() => setTrendContext(id)} data-active={trendContext === id} className="expo-segmented-button">{label}</button>
+                    ))}
+                  </div>
                 </div>
-
                 {trendContext === 'water' ? <ChillerWaterTrendChart data={trendWater?.series || []} /> : null}
                 {trendContext === 'capacity' ? <ChillerCapacityTrendChart data={trendCapacity?.series || []} /> : null}
                 {trendContext === 'pressures' ? <ChillerPressureTrendChart data={trendPressure?.series || []} /> : null}
-                {trendContext === 'pumps' && trendPump ? (
-                  <div className="grid min-w-0 gap-5 xl:grid-cols-2">
-                    <PumpPressureTrendChart data={trendPump.pressureSeries} />
-                    <PumpBypassTrendChart data={trendPump.bypassSeries} />
-                    <div className="xl:col-span-2"><PumpActivityChart data={trendPump.activitySeries} /></div>
-                  </div>
-                ) : null}
+                {trendContext === 'pumps' && trendPump ? <div className="grid min-w-0 gap-3.5 xl:grid-cols-2"><PumpPressureTrendChart data={trendPump.pressureSeries} /><PumpBypassTrendChart data={trendPump.bypassSeries} /><div className="xl:col-span-2"><PumpActivityChart data={trendPump.activitySeries} /></div></div> : null}
               </Panel>
             ) : null}
 
-            <section className="rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm leading-relaxed">
-              <strong className="text-primary">Regra de governança:</strong> ΔT baixo isoladamente não caracteriza falha. No Expo Center Norte a carga térmica varia com ocupação, eventos e condições externas; qualquer diagnóstico deve correlacionar operação, setpoint, bypass, bombas, alarmes e qualidade das leituras.
+            <section className="rounded-xl border border-primary/15 bg-primary/[0.035] px-4 py-3 text-[11px] leading-relaxed text-muted-foreground">
+              <strong className="text-primary">Governança:</strong> ΔT baixo isoladamente não caracteriza falha. Diagnósticos devem correlacionar carga, operação, setpoint, bypass, bombas, alarmes e qualidade das leituras.
             </section>
           </>
         );

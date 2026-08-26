@@ -126,13 +126,13 @@ function AiPage() {
       description="Copiloto operacional governado: evidências primeiro, resposta determinística quando possível e LLM apenas para contextualização textual."
     >
       {(data) => (
-        <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <section className="grid min-w-0 gap-3.5 xl:grid-cols-[minmax(0,1fr)_360px]">
           <Panel title="Assistente Operacional" icon={Sparkles} className="min-w-0">
-            <div className="min-h-[360px] space-y-4">
+            <div className="min-h-[360px] space-y-3.5">
               {historyLoading ? (
                 <div className="flex min-h-[180px] items-center justify-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="h-4 w-4 animate-spin" /> Recuperando histórico da sessão...</div>
               ) : history.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-border bg-surface/40 p-5">
+                <div className="rounded-[14px] border border-dashed border-border bg-surface/40 p-5">
                   <div className="flex items-start gap-3">
                     <span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Bot className="h-5 w-5" /></span>
                     <div><p className="text-sm font-semibold">Pronto para analisar o período selecionado</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">A IA cita as evidências disponíveis e declara quando a cobertura ou a fonte não permite uma conclusão segura.</p></div>
@@ -161,7 +161,7 @@ function AiPage() {
             </form>
           </Panel>
 
-          <div className="min-w-0 space-y-4">
+          <div className="min-w-0 space-y-3.5">
             <Panel title="Governança da IA" icon={ShieldCheck}>
               <div className="space-y-3 text-xs leading-relaxed text-muted-foreground">
                 <p><strong className="text-foreground">Sem causa raiz inventada.</strong> O modelo distingue fato medido, hipótese permitida e validação de campo.</p>

@@ -1,4 +1,4 @@
-# Expo Center Norte — Frontend V2 RC2 / Workflows Expo V2
+# Expo Center Norte — Frontend V2 RC6 / UI Refinement
 
 Frontend de produção para o Expo Center Norte, alinhado à nova arquitetura n8n/Redis Expo V2.
 
@@ -73,7 +73,7 @@ O frontend não usa mais o alias antigo `/expo-cag-ai-assistant` nem prefere `/c
 
 ## Tendências
 
-A resposta do workflow 10 envia as séries de Água Gelada em um array com prefixos Azul/Branco/Vermelho. A RC2 separa essas séries no gráfico para não conectar o último ponto de um chiller ao primeiro ponto de outro.
+A resposta do workflow 10 envia as séries de Água Gelada em um array com prefixos Azul/Branco/Vermelho. A interface separa essas séries no gráfico para não conectar o último ponto de um chiller ao primeiro ponto de outro.
 
 - seletor Azul / Branco / Vermelho;
 - gaps permanecem gaps (`connectNulls=false`);
@@ -82,7 +82,7 @@ A resposta do workflow 10 envia as séries de Água Gelada em um array com prefi
 
 ## Referência histórica
 
-O workflow 10 atualmente marca `dataFreshness` como `CURRENT`. A RC2 faz uma normalização exclusivamente de apresentação: se `period.referenceDate` estiver mais de um dia atrás da data local, exibe o badge **Dados históricos**. Nenhum KPI é recalculado nessa etapa.
+O workflow 10 atualmente marca `dataFreshness` como `CURRENT`. A interface faz uma normalização exclusivamente de apresentação: se `period.referenceDate` estiver mais de um dia atrás da data local, exibe o badge **Dados históricos**. Nenhum KPI é recalculado nessa etapa.
 
 ## Hidrômetros
 
@@ -117,3 +117,8 @@ Variáveis `VITE_*` são incorporadas durante o build. Qualquer mudança exige *
 - IA apresenta evidências e limitações e não deve inventar causa raiz;
 - alarmes Carrier exigem validação do mapeamento BMS;
 - fluxo de água não é inferido por pressão/bypass.
+
+
+## RC6 — identidade e temas
+
+A RC6 aplica o conceito visual institucional aprovado, usa a marca Expo enviada na sidebar/favicon e padroniza tooltips, hover e contraste para tema claro e escuro. Consulte `CHANGELOG_RC6_UI_REFINEMENT.md` e `VALIDACAO_RC6.md`.

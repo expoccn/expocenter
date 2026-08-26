@@ -81,21 +81,21 @@ function ReportsPage() {
       {() => (
         <>
           {EXPO_PREVIEW_MODE ? (
-            <div className="rounded-2xl border border-warning/25 bg-warning/8 px-4 py-3 text-sm text-warning">
+            <div className="rounded-[14px] border border-warning/25 bg-warning/8 px-4 py-3 text-sm text-warning">
               <strong>Modo de homologação visual:</strong> os botões e contratos estão preparados, mas a geração fica bloqueada até os workflows Expo V2 serem implantados.
             </div>
           ) : null}
           {!EXPO_PPTX_ENABLED && !EXPO_PREVIEW_MODE ? (
-            <div className="rounded-2xl border border-border bg-surface/50 px-4 py-3 text-sm text-muted-foreground">
+            <div className="rounded-[14px] border border-border bg-surface/50 px-4 py-3 text-sm text-muted-foreground">
               PowerPoint permanece desabilitado até o serviço <code>expo-pptx-service</code> e os workflows 39–41 serem ativados. Os PDFs continuam disponíveis pela última versão publicada.
             </div>
           ) : null}
-          {message ? <div className="rounded-2xl border border-critical/25 bg-critical/8 px-4 py-3 text-sm text-critical">{message}</div> : null}
+          {message ? <div className="rounded-[14px] border border-critical/25 bg-critical/8 px-4 py-3 text-sm text-critical">{message}</div> : null}
 
           <Panel title="Relatórios da CAG" icon={FileBarChart}>
             <div className="grid gap-4 lg:grid-cols-3">
               {cagReports.map((report) => (
-                <article key={report.type} className="rounded-2xl border border-border bg-surface/35 p-4">
+                <article key={report.type} className="rounded-[14px] border border-border bg-surface/40 p-4">
                   <div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold">Relatório {report.label}</p><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{report.description}</p></div><StatusBadge label="CAG" tone="info" /></div>
                   <div className="mt-5 grid grid-cols-2 gap-2">
                     <Button variant="outline" disabled={busy !== null || EXPO_PREVIEW_MODE} onClick={() => void run(`cag-${report.type}-pdf`, () => downloadCagReport(report.type, 'pdf'))}>

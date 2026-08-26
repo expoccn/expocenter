@@ -33,8 +33,8 @@ export function ExpoShell({
   return (
     <div className="flex min-h-screen min-w-0 bg-background">
       <Sidebar />
-      <main className="min-w-0 flex-1 overflow-x-hidden px-3 py-4 sm:px-4 lg:px-5 xl:px-6">
-        <div className="mx-auto w-full max-w-[1780px] space-y-4">
+      <main className="min-w-0 flex-1 overflow-x-hidden px-3 py-3 sm:px-4 sm:py-4 lg:px-5 xl:px-6 2xl:px-7">
+        <div className="mx-auto w-full max-w-[1660px] space-y-3.5 sm:space-y-4">
           <ExpoHeader
             title={title}
             {...(description ? { description } : {})}
