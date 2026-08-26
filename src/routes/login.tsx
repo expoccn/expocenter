@@ -41,8 +41,8 @@ function LoginPage() {
 
   return (
     <AuthShell>
-      <div className="w-full max-w-[570px] py-4 sm:py-8 lg:py-10">
-        <div className="mx-auto flex max-w-[330px] justify-center">
+      <div className="w-full max-w-[570px] py-3 sm:py-5 lg:py-1 xl:py-2">
+        <div className="mx-auto flex max-w-[250px] justify-center xl:max-w-[275px] 2xl:max-w-[300px]">
           <img
             src="/expo-center-norte-login-logo.png"
             alt="Expo Center Norte — Centro de Exposições e Convenções"
@@ -50,12 +50,12 @@ function LoginPage() {
           />
         </div>
 
-        <div className="mt-8 text-center sm:mt-10">
-          <h2 className="text-3xl font-bold tracking-[-0.035em] text-[#0a1b36] sm:text-[2.15rem]">Bem-vindo(a)</h2>
-          <p className="mt-2 text-sm text-slate-500 sm:text-base">Acesse o portal de gestão operacional</p>
+        <div className="mt-5 text-center xl:mt-6 2xl:mt-7">
+          <h2 className="text-[1.8rem] font-bold tracking-[-0.035em] text-[#0a1b36] xl:text-[2rem] 2xl:text-[2.15rem]">Bem-vindo(a)</h2>
+          <p className="mt-1.5 text-sm text-slate-500 xl:text-[0.95rem] 2xl:text-base">Acesse o portal de gestão operacional</p>
         </div>
 
-        <form className="mt-9 space-y-5 sm:mt-10" onSubmit={handleSubmit}>
+        <form className="mt-6 space-y-4 xl:mt-7 2xl:mt-8" onSubmit={handleSubmit}>
           <div className="space-y-2.5">
             <Label htmlFor="username" className="text-sm font-semibold text-slate-900">Usuário</Label>
             <div className="relative">
@@ -65,7 +65,7 @@ function LoginPage() {
                 autoComplete="username"
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
-                className="h-14 rounded-xl border-slate-300 bg-white pl-12 pr-4 text-base text-slate-900 shadow-none placeholder:text-slate-400 focus-visible:border-[#174a82] focus-visible:ring-2 focus-visible:ring-[#174a82]/15"
+                className="h-[50px] rounded-xl border-slate-300 bg-white pl-12 pr-4 text-[0.95rem] text-slate-900 shadow-none placeholder:text-slate-400 focus-visible:border-[#174a82] focus-visible:ring-2 focus-visible:ring-[#174a82]/15 2xl:h-14 2xl:text-base"
                 placeholder="Digite seu usuário"
                 autoFocus
               />
@@ -82,7 +82,7 @@ function LoginPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="h-14 rounded-xl border-slate-300 bg-white px-12 text-base text-slate-900 shadow-none placeholder:text-slate-400 focus-visible:border-[#174a82] focus-visible:ring-2 focus-visible:ring-[#174a82]/15"
+                className="h-[50px] rounded-xl border-slate-300 bg-white px-12 text-[0.95rem] text-slate-900 shadow-none placeholder:text-slate-400 focus-visible:border-[#174a82] focus-visible:ring-2 focus-visible:ring-[#174a82]/15 2xl:h-14 2xl:text-base"
                 placeholder="Digite sua senha"
               />
               <button
@@ -122,7 +122,7 @@ function LoginPage() {
           {help ? <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-[#174a82]" role="status">{help}</div> : null}
 
           <button
-            className="flex h-14 w-full items-center justify-center rounded-xl bg-[#0a3974] px-5 text-base font-semibold text-white shadow-[0_10px_24px_rgba(10,57,116,0.2)] transition-colors hover:bg-[#082f61] disabled:cursor-not-allowed disabled:opacity-65"
+            className="flex h-[50px] w-full items-center justify-center rounded-xl bg-[#0a3974] px-5 text-[0.95rem] font-semibold text-white shadow-[0_10px_24px_rgba(10,57,116,0.2)] transition-colors hover:bg-[#082f61] disabled:cursor-not-allowed disabled:opacity-65 2xl:h-14 2xl:text-base"
             type="submit"
             disabled={submitting}
           >
@@ -130,13 +130,13 @@ function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-8 flex items-center gap-4 text-xs font-medium text-slate-500 before:h-px before:flex-1 before:bg-slate-200 after:h-px after:flex-1 after:bg-slate-200">
+        <div className="mt-5 flex items-center gap-4 text-xs font-medium text-slate-500 before:h-px before:flex-1 before:bg-slate-200 after:h-px after:flex-1 after:bg-slate-200 2xl:mt-7">
           Segurança
         </div>
 
-        <div className="mt-5 flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50/90 px-5 py-4">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#0f5ea6]">
-            <ShieldCheck className="h-6 w-6" strokeWidth={1.8} />
+        <div className="mt-4 flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50/90 px-4 py-3 2xl:mt-5 2xl:px-5 2xl:py-4">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#0f5ea6] 2xl:h-11 2xl:w-11">
+            <ShieldCheck className="h-5 w-5 2xl:h-6 2xl:w-6" strokeWidth={1.8} />
           </span>
           <div>
             <p className="text-sm font-semibold text-slate-900">Acesso restrito a usuários autorizados</p>
@@ -144,12 +144,12 @@ function LoginPage() {
           </div>
         </div>
 
-        <div className="mt-9 flex flex-col items-center justify-between gap-2 border-t border-slate-200 pt-5 text-[11px] text-slate-400 sm:flex-row">
+        <div className="mt-5 flex flex-col items-center justify-between gap-2 border-t border-slate-200 pt-4 text-[11px] text-slate-400 sm:flex-row 2xl:mt-7 2xl:pt-5">
           <span>© 2026 Expo Center Norte</span>
           <span>Portal de Gestão Operacional</span>
         </div>
 
-        <div className="mt-7 flex justify-center lg:hidden">
+        <div className="mt-5 flex justify-center lg:hidden">
           <div className="rounded-xl bg-[#071b35] px-5 py-3">
             <img src="/ccn-logo-white.png" alt="CCN Automação" className="w-[118px] object-contain" />
           </div>

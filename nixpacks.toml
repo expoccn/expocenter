@@ -1,0 +1,8 @@
+# Expo Center Norte - EasyPanel/Nixpacks
+# TanStack Start (SSR), Node 22.
+
+[phases.build]
+cmds = ["bun run build"]
+
+[start]
+cmd = "node .output/server/index.mjs"
