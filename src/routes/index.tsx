@@ -1,7 +1,13 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { AlertTriangle, ArrowRight, Database, Droplets, Snowflake, Waves } from 'lucide-react';
 import { ExpoShell } from '@/components/dashboard/ExpoShell';
-import { MetricCard, ChillerCard, CagTrendChart } from '@/components/dashboard/ExpoWidgets';
+import { MetricCard, CagTrendChart } from '@/components/dashboard/ExpoWidgets';
+import {
+  ChillerCapacityComparisonChart,
+  ChillerOperationChart,
+  PavillionConsumptionChart,
+  WaterMixChart,
+} from '@/components/dashboard/AnalyticsCharts';
 import { Panel } from '@/components/dashboard/Panel';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 
@@ -11,7 +17,7 @@ function OverviewPage() {
   return (
     <ExpoShell
       title="Visão Geral"
-      description="Visão consolidada da Central de Água Gelada, gestão hídrica e qualidade das fontes do Expo Center Norte."
+      description="Visão executiva da Central de Água Gelada, gestão hídrica e qualidade das fontes do Expo Center Norte."
     >
       {(data) => {
         const operating = data.cag.chillers.filter((item) => item.state === 'OPERATING').length;
@@ -21,6 +27,8 @@ function OverviewPage() {
         const avgCapacityValue = avgCapacity.length
           ? avgCapacity.reduce((sum, item) => sum + Number(item.capacityPct), 0) / avgCapacity.length
           : null;
+        const cagAnalytics = data.cag.analytics;
+        const waterAnalytics = data.water.analytics;
 
         return (
           <>
@@ -32,20 +40,23 @@ function OverviewPage() {
               <MetricCard label="Consumo de água" value={data.water.totalM3 == null ? 'N/D' : `${data.water.totalM3.toFixed(1).replace('.', ',')} m³`} detail={`${commErrors} hidrômetro(s) com falha de comunicação no período.`} tone={commErrors ? 'warn' : 'ok'} icon={Droplets} />
             </section>
 
-            <section className="grid min-w-0 gap-4 2xl:grid-cols-[minmax(0,1fr)_390px]">
-              <div className="min-w-0 space-y-4">
-                <div className="grid min-w-0 gap-4 xl:grid-cols-3">
-                  {data.cag.chillers.map((chiller) => <ChillerCard key={chiller.id} chiller={chiller} />)}
-                </div>
+            <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.8fr)]">
+              <Panel title="Horas de operação dos chillers" icon={Snowflake}>
+                <ChillerOperationChart data={cagAnalytics?.chillerOperation || []} />
+              </Panel>
+              <Panel title="Composição do consumo hídrico" icon={Droplets}>
+                <WaterMixChart data={waterAnalytics?.mix || []} />
+              </Panel>
+            </section>
 
-                <Panel title="Tendência operacional consolidada" icon={Waves} action={<Link to="/cag" className="inline-flex items-center gap-1 text-xs font-semibold text-primary">Abrir CAG <ArrowRight className="h-3.5 w-3.5" /></Link>}>
-                  <CagTrendChart data={data.cag.trends} />
-                </Panel>
-              </div>
+            <section className="grid min-w-0 gap-4 2xl:grid-cols-[minmax(0,1fr)_390px]">
+              <Panel title="Tendência de água gelada" icon={Waves} action={<Link to="/cag" className="inline-flex items-center gap-1 text-xs font-semibold text-primary">Abrir CAG <ArrowRight className="h-3.5 w-3.5" /></Link>}>
+                <CagTrendChart data={data.cag.trends} />
+              </Panel>
 
               <Panel title="Pontos de atenção" icon={AlertTriangle} className="min-w-0">
                 <div className="space-y-3">
-                  {data.attention.map((item) => (
+                  {data.attention.length ? data.attention.slice(0, 8).map((item) => (
                     <div key={item.id} className="rounded-xl border border-border bg-surface/50 p-3.5">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <p className="min-w-0 flex-1 text-sm font-semibold leading-snug">{item.title}</p>
@@ -53,8 +64,17 @@ function OverviewPage() {
                       </div>
                       <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.detail}</p>
                     </div>
-                  ))}
+                  )) : <p className="rounded-xl border border-dashed border-border p-5 text-sm text-muted-foreground">Sem pontos de atenção registrados para o período.</p>}
                 </div>
+              </Panel>
+            </section>
+
+            <section className="grid min-w-0 gap-4 xl:grid-cols-2">
+              <Panel title="Consumo por pavilhão" icon={Droplets}>
+                <PavillionConsumptionChart data={waterAnalytics?.pavillions || []} />
+              </Panel>
+              <Panel title="Capacidade média dos chillers" icon={Snowflake}>
+                <ChillerCapacityComparisonChart data={cagAnalytics?.chillerCapacity || []} />
               </Panel>
             </section>
 
@@ -63,10 +83,10 @@ function OverviewPage() {
                 <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Snowflake className="h-5 w-5" /></span><div><p className="font-semibold">Central de Água Gelada</p><p className="text-xs text-muted-foreground">Chillers, bombas, pressões e tendências</p></div></div>
               </Link>
               <Link to="/hidrometros" className="group rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
-                <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Droplets className="h-5 w-5" /></span><div><p className="font-semibold">Gestão Hídrica</p><p className="text-xs text-muted-foreground">Potável, reúso, pavimentos e qualidade</p></div></div>
+                <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Droplets className="h-5 w-5" /></span><div><p className="font-semibold">Gestão Hídrica</p><p className="text-xs text-muted-foreground">Potável, reúso, pavilhões e ranking de consumo</p></div></div>
               </Link>
               <Link to="/qualidade-dados" className="group rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
-                <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Database className="h-5 w-5" /></span><div><p className="font-semibold">Qualidade dos Dados</p><p className="text-xs text-muted-foreground">Cobertura, comunicação e lacunas</p></div></div>
+                <div className="flex items-center gap-3"><span className="rounded-xl bg-primary/10 p-2.5 text-primary"><Database className="h-5 w-5" /></span><div><p className="font-semibold">Qualidade dos Dados</p><p className="text-xs text-muted-foreground">Cobertura, disponibilidade, comunicação e lacunas</p></div></div>
               </Link>
             </section>
           </>

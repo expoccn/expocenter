@@ -85,7 +85,7 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
   },
-  "version": "2.0.0-rc4-login-responsivo",
+  "version": "2.0.0-rc5-visual-analytics",
   "engines": {
     "node": "22.x"
   }

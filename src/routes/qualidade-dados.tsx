@@ -2,6 +2,11 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AlertTriangle, CheckCircle2, Database, RadioTower, ShieldCheck } from 'lucide-react';
 import { ExpoShell } from '@/components/dashboard/ExpoShell';
 import { CoverageBar, MetricCard, SourceStatusIcon } from '@/components/dashboard/ExpoWidgets';
+import {
+  QualityAvailabilityHistoryChart,
+  QualityCoverageChart,
+  QualityStatusDonut,
+} from '@/components/dashboard/AnalyticsCharts';
 import { Panel } from '@/components/dashboard/Panel';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 
@@ -11,7 +16,7 @@ function QualityPage() {
   return (
     <ExpoShell
       title="Qualidade dos Dados"
-      description="Cobertura temporal, comunicação e validade das fontes. Dado ausente, falha de comunicação e zero medido são estados diferentes em toda a plataforma."
+      description="Cobertura temporal, disponibilidade das fontes, comunicação e validade. Dado ausente, falha de comunicação e zero medido permanecem estados diferentes em toda a plataforma."
     >
       {(data) => {
         const ok = data.quality.sources.filter((source) => source.status === 'OK').length;
@@ -20,6 +25,7 @@ function QualityPage() {
         const sampleSources = data.quality.sources.filter((source) => source.expectedSamples != null && source.validSamples != null);
         const expected = sampleSources.length ? sampleSources.reduce((sum, source) => sum + Number(source.expectedSamples), 0) : null;
         const valid = sampleSources.length ? sampleSources.reduce((sum, source) => sum + Number(source.validSamples), 0) : null;
+        const analytics = data.quality.analytics;
 
         return (
           <>
@@ -30,6 +36,20 @@ function QualityPage() {
               <MetricCard label="Sem dados / comunicação" value={String(noData)} detail="Não entram em cálculos como zero." tone={noData ? 'crit' : 'ok'} icon={RadioTower} />
               <MetricCard label="Amostras válidas" value={valid == null || expected == null ? 'N/D' : `${valid}/${expected}`} detail="Somente fontes com contagens conhecidas entram neste total." tone={expected != null && expected > 0 && valid != null && valid / expected >= 0.9 ? 'ok' : 'warn'} icon={ShieldCheck} />
             </section>
+
+            <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.8fr)]">
+              <Panel title="Cobertura por fonte" icon={Database}>
+                <QualityCoverageChart data={data.quality.sources.map((source) => ({ label: source.label, coveragePct: source.coveragePct }))} />
+              </Panel>
+              <Panel title="Composição dos status" icon={ShieldCheck}>
+                <QualityStatusDonut data={analytics?.statusBreakdown || []} />
+              </Panel>
+            </section>
+
+            <Panel title="Disponibilidade diária das 6 fontes CAG" icon={RadioTower}>
+              <QualityAvailabilityHistoryChart data={analytics?.cagAvailabilityHistory || []} />
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">Este gráfico representa presença das seis fontes CAG por dia no período selecionado. Ele não substitui a cobertura amostral de cada equipamento.</p>
+            </Panel>
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {data.quality.sources.map((source) => (

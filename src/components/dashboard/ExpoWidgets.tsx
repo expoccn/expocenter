@@ -102,6 +102,12 @@ export function ChillerCard({ chiller }: { chiller: ExpoChiller }) {
         <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Descarga A / B</span><strong>{fmt(chiller.dischargeA, '')} / {fmt(chiller.dischargeB, '')}</strong></div>
         <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Compressores</span><strong>{chiller.compressorCount == null ? 'N/D' : chiller.compressorCount}</strong></div>
         <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Alarme</span><strong>{chiller.alarmCode ?? 'N/D'}</strong></div>
+        <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Circuitos A / B</span><strong>{fmt(chiller.circuitAPct, '%')} / {fmt(chiller.circuitBPct, '%')}</strong></div>
+        <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Operação no período</span><strong>{fmt(chiller.operatingHours, ' h')}</strong></div>
+        <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Partidas estimadas</span><strong>{chiller.starts ?? 'N/D'}</strong></div>
+        <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Horas em alarme</span><strong>{fmt(chiller.alarmHours, ' h')}</strong></div>
+        <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Óleo A1 / A2</span><strong>{fmt(chiller.oilA1, '')} / {fmt(chiller.oilA2, '')}</strong></div>
+        <div className="flex items-center justify-between gap-2 text-xs"><span className="text-muted-foreground">Óleo B1 / B2</span><strong>{fmt(chiller.oilB1, '')} / {fmt(chiller.oilB2, '')}</strong></div>
       </div>
 
       <div className="border-t border-border px-4 py-3">
@@ -134,11 +140,18 @@ export function PumpGroupCard({ group }: { group: ExpoPumpGroup }) {
         <div className="rounded-xl bg-surface p-3"><Fan className="mb-2 h-4 w-4 text-primary" /><p className="text-[10px] uppercase text-muted-foreground">Bypass</p><p className="mt-1 text-sm font-semibold">{fmt(group.bypassPct, '%', 0)}</p></div>
       </div>
 
+      <div className="mt-3 grid grid-cols-3 gap-2 text-[10px]">
+        <div className="rounded-lg bg-surface px-2.5 py-2"><span className="text-muted-foreground">Horas Local</span><p className="mt-1 font-semibold">{fmt(group.localHoursTotal, ' h')}</p></div>
+        <div className="rounded-lg bg-surface px-2.5 py-2"><span className="text-muted-foreground">Horas alarme</span><p className="mt-1 font-semibold">{fmt(group.alarmHoursTotal, ' h')}</p></div>
+        <div className="rounded-lg bg-surface px-2.5 py-2"><span className="text-muted-foreground">Partidas</span><p className="mt-1 font-semibold">{group.startsTotal ?? 'N/D'}</p></div>
+      </div>
+
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-2 2xl:grid-cols-4">
         {group.pumps.map((pump) => (
           <div key={pump.id} className="rounded-xl border border-border bg-background px-3 py-2.5">
             <div className="flex items-center justify-between gap-2"><span className="text-xs font-semibold">{pump.label}</span><span className={cn('h-2 w-2 rounded-full', pump.state === 'ON' ? 'bg-success' : pump.state === 'OFF' ? 'bg-muted-foreground/35' : 'bg-warning')} /></div>
             <p className="mt-1 text-[10px] text-muted-foreground">{pump.remote == null ? 'Modo N/D' : pump.remote ? 'Remoto' : 'Local'} · {pump.alarm ? 'Alarme' : 'Sem alarme'}</p>
+            <p className="mt-1 text-[10px] text-muted-foreground">ON {fmt(pump.operatingHours, ' h')} · Local {fmt(pump.localHours, ' h')}</p>
           </div>
         ))}
       </div>
