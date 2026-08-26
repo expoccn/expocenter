@@ -85,7 +85,7 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
   },
-  "version": "2.0.0-rc6-ui-refinement",
+  "version": "2.0.0-rc6.1-login-fullscreen",
   "engines": {
     "node": "22.x"
   }

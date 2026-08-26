@@ -10,10 +10,10 @@ const highlights = [
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
     <div
-      className="min-h-[100svh] bg-[#edf2f7] p-0 text-slate-950 sm:p-3 lg:h-[100svh] lg:min-h-0 lg:overflow-hidden lg:p-4 xl:p-5"
+      className="min-h-[100svh] w-full overflow-x-hidden bg-white text-slate-950 lg:h-[100svh] lg:min-h-0 lg:overflow-hidden"
       style={{ colorScheme: 'light' }}
     >
-      <main className="mx-auto grid min-h-[100svh] w-full max-w-[1540px] overflow-hidden bg-white shadow-[0_30px_100px_rgba(15,31,52,0.16)] sm:min-h-[calc(100svh-24px)] sm:rounded-[26px] lg:h-[calc(100svh-32px)] lg:min-h-0 lg:grid-cols-[minmax(520px,1.03fr)_minmax(560px,0.97fr)] xl:h-[calc(100svh-40px)]">
+      <main className="grid min-h-[100svh] w-full max-w-none bg-white lg:h-[100svh] lg:min-h-0 lg:grid-cols-[minmax(520px,1.03fr)_minmax(560px,0.97fr)] lg:overflow-hidden">
         <section className="relative hidden h-full min-h-0 overflow-hidden bg-[#071d3c] text-white lg:flex lg:flex-col">
           <img
             src="/expo-center-norte-login-venue.jpg"
@@ -53,7 +53,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
           />
         </section>
 
-        <section className="relative flex min-h-[100svh] items-center justify-center bg-white px-5 py-6 sm:min-h-[calc(100svh-24px)] sm:px-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:px-10 lg:py-3 xl:px-14 xl:py-4 2xl:px-16">
+        <section className="relative flex min-h-[100svh] items-center justify-center bg-white px-5 py-6 sm:px-8 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:px-10 lg:py-3 xl:px-14 xl:py-4 2xl:px-16">
           {children}
         </section>
       </main>
