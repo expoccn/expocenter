@@ -1,0 +1,18 @@
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+
+export default defineConfig({
+  tanstackStart: {
+    server: {
+      entry: "server",
+    },
+  },
+
+  vite: {
+    server: {
+      allowedHosts: ["expocenternorte.2see.io"],
+    },
+    preview: {
+      allowedHosts: ["expocenternorte.2see.io"],
+    },
+  },
+});
