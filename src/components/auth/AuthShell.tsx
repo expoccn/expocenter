@@ -1,29 +1,59 @@
+import { BarChart3, ShieldCheck, UsersRound } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { ExpoLogo } from '@/components/dashboard/ExpoLogo';
+
+const highlights = [
+  { icon: BarChart3, label: 'Excelência\noperacional' },
+  { icon: ShieldCheck, label: 'Segurança e\nconfiabilidade' },
+  { icon: UsersRound, label: 'Gestão inteligente\nde facilities' },
+];
 
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <div className="relative min-h-[100svh] overflow-x-hidden bg-[#08141f] text-white" style={{ colorScheme: 'dark' }}>
-      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(26,146,199,0.22),transparent_30%),radial-gradient(circle_at_82%_12%,rgba(43,183,192,0.13),transparent_25%),linear-gradient(135deg,#06111b_0%,#0a1d2d_48%,#06111b_100%)]" />
-      <div aria-hidden="true" className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px)] [background-size:48px_48px]" />
+    <div className="min-h-[100svh] bg-[#edf2f7] p-0 text-slate-950 sm:p-3 lg:p-5" style={{ colorScheme: 'light' }}>
+      <main className="mx-auto grid min-h-[100svh] w-full max-w-[1540px] overflow-hidden bg-white shadow-[0_30px_100px_rgba(15,31,52,0.16)] sm:min-h-[calc(100svh-24px)] sm:rounded-[26px] lg:min-h-[calc(100svh-40px)] lg:grid-cols-[minmax(520px,1.03fr)_minmax(560px,0.97fr)]">
+        <section className="relative hidden min-h-[760px] overflow-hidden bg-[#071d3c] text-white lg:flex lg:flex-col">
+          <img
+            src="/expo-center-norte-login-venue.jpg"
+            alt="Fachada do Expo Center Norte"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+          <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,32,76,0.55)_0%,rgba(3,26,60,0.2)_38%,rgba(2,15,39,0.76)_76%,rgba(2,13,34,0.98)_100%)]" />
+          <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,24,61,0.82)_0%,rgba(5,39,88,0.34)_54%,rgba(2,18,43,0.18)_100%)]" />
+          <div aria-hidden="true" className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(98,166,231,.2)_1px,transparent_1px),linear-gradient(90deg,rgba(98,166,231,.2)_1px,transparent_1px)] [background-size:56px_56px]" />
 
-      <div className="relative z-10 mx-auto grid min-h-[100svh] w-full max-w-[1580px] gap-8 px-5 py-7 sm:px-8 md:grid-cols-[minmax(0,1fr)_minmax(420px,540px)] md:items-center md:gap-12 md:px-12 lg:gap-20 lg:px-16 xl:px-20">
-        <section className="flex min-h-[280px] flex-col justify-center md:min-h-0 md:pb-20">
-          <div className="inline-flex w-fit rounded-2xl border border-white/10 bg-white/95 px-4 py-3 shadow-2xl"><ExpoLogo onLight /></div>
-          <div className="mt-8 max-w-xl">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-cyan-300/90">Centro de Inteligência Operacional</p>
-            <h1 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.65rem]">CAG &amp; Gestão Hídrica</h1>
-            <p className="mt-3 max-w-lg text-base leading-relaxed text-white/65 sm:text-lg">Monitoramento operacional, qualidade dos dados, relatórios e análises governadas do Expo Center Norte.</p>
-            <div className="mt-6 h-[2px] w-14 bg-cyan-400 shadow-[0_0_18px_rgba(34,211,238,0.55)]" />
+          <div className="relative z-10 px-12 pt-14 xl:px-16 xl:pt-16">
+            <p className="text-[2rem] font-semibold tracking-[-0.035em] text-white xl:text-[2.35rem]">Expo Center Norte</p>
+            <h1 className="mt-2 max-w-[520px] text-[2.25rem] font-semibold leading-[1.08] tracking-[-0.045em] text-[#68a8f3] xl:text-[2.8rem]">
+              Conectando negócios,<br />gerando experiências.
+            </h1>
+            <div className="mt-7 h-[3px] w-14 rounded-full bg-[#e32735]" />
+            <p className="mt-6 max-w-[390px] text-base leading-relaxed text-white/90 xl:text-lg">
+              Um dos principais centros de exposições e convenções da América Latina.
+            </p>
           </div>
+
+          <div className="relative z-10 mt-auto px-10 pb-8 xl:px-14 xl:pb-9">
+            <div className="grid grid-cols-3 gap-3 border-b border-white/10 pb-24">
+              {highlights.map(({ icon: Icon, label }) => (
+                <div key={label} className="flex flex-col items-center text-center">
+                  <Icon className="h-7 w-7 text-[#55a7f7] xl:h-8 xl:w-8" strokeWidth={1.8} />
+                  <p className="mt-3 whitespace-pre-line text-xs font-medium leading-relaxed text-white/92 xl:text-sm">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <img
+            src="/ccn-logo-white.png"
+            alt="CCN Automação"
+            className="absolute bottom-7 left-9 z-20 w-[126px] object-contain opacity-95 drop-shadow-[0_3px_14px_rgba(0,0,0,0.42)] xl:bottom-8 xl:left-12 xl:w-[142px]"
+          />
         </section>
 
-        <section className="flex items-center justify-center pb-24 pt-2 md:justify-end md:pb-8 md:pt-8">{children}</section>
-
-        <div className="flex items-center pb-2 md:hidden"><img src="/ccn-logo-white.png" alt="CCN Automação" className="w-[118px] object-contain opacity-90" /></div>
-      </div>
-
-      <img src="/ccn-logo-white.png" alt="CCN Automação" className="absolute bottom-9 left-9 z-20 hidden w-[128px] object-contain opacity-90 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] md:block lg:bottom-11 lg:left-14 lg:w-[140px] xl:left-16 xl:w-[148px]" />
+        <section className="relative flex min-h-[100svh] items-center justify-center bg-white px-5 py-8 sm:min-h-[calc(100svh-24px)] sm:px-8 lg:min-h-[760px] lg:px-12 xl:px-16">
+          {children}
+        </section>
+      </main>
     </div>
   );
 }

@@ -8,7 +8,7 @@ export type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated';
 interface AuthContextValue {
   status: AuthStatus;
   user: AuthUser | null;
-  login: (username: string, password: string) => Promise<LoginResponse>;
+  login: (username: string, password: string, remember?: boolean) => Promise<LoginResponse>;
   logout: () => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   refresh: () => Promise<void>;
@@ -54,9 +54,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleExpired);
   }, [clearSession]);
 
-  const login = useCallback(async (username: string, password: string) => {
+  const login = useCallback(async (username: string, password: string, remember = false) => {
     const response = await loginAccess(username.trim(), password);
-    setAccessToken(response.access_token);
+    setAccessToken(response.access_token, remember);
     setUser(response.user);
     setStatus('authenticated');
     return response;
