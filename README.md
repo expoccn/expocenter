@@ -1,4 +1,4 @@
-# Expo Center Norte — Frontend V2 RC6 / UI Refinement
+# Expo Center Norte — Frontend V2 RC6.2 / AI Feedback
 
 Frontend de produção para o Expo Center Norte, alinhado à nova arquitetura n8n/Redis Expo V2.
 
@@ -122,3 +122,7 @@ Variáveis `VITE_*` são incorporadas durante o build. Qualquer mudança exige *
 ## RC6 — identidade e temas
 
 A RC6 aplica o conceito visual institucional aprovado, usa a marca Expo enviada na sidebar/favicon e padroniza tooltips, hover e contraste para tema claro e escuro. Consulte `CHANGELOG_RC6_UI_REFINEMENT.md` e `VALIDACAO_RC6.md`.
+
+## RC6.2 — feedback do chat da IA
+
+A RC6.2 preserva os contratos dos workflows 23–25 e melhora o fluxo visual do chat: a pergunta entra imediatamente na conversa, o Copiloto exibe `Analisando dados` com spinner durante a consulta e a resposta substitui esse estado assim que `/ai-chat` retorna. Consulte `CHANGELOG_RC6_2_AI_FEEDBACK.md` e `VALIDACAO_RC6_2_AI_FEEDBACK.md`.
