@@ -85,7 +85,7 @@
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
   },
-  "version": "2.0.0-rc6.2-ai-feedback",
+  "version": "2.0.0-rc6.3-ai-evidence-ui",
   "engines": {
     "node": "22.x"
   }
